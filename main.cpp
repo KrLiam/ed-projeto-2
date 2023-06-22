@@ -64,6 +64,14 @@ public:
         }
         return children[i];
     }
+
+    int count() {
+        int count = 0;
+        for (int i = 0; i < 26; i++) {
+            if (children[i]) count += children[i]->count();
+        }
+        return count + !isEmpty();
+    }
 };
 
 template<typename T>
@@ -90,6 +98,14 @@ public:
 
     const T& get(const std::string& key) {
         return getNode(key)->getData();
+    }
+
+    void set(const std::string& key, const T& data) {
+        getNode(key)->setData(data);
+    }
+
+    int countPrefix(const std::string& key) {
+        return getNode(key)->count();
     }
 };
 
@@ -134,9 +150,20 @@ int main() {
 
     Trie<DictEntry> trie;
 
-    auto data = trie.get("word");
-    data.pos = 123;
-    data.length = 49;
+    trie.set("bear", {});
+    trie.set("bell", {});
+    trie.set("bid", {});
+    trie.set("bull", {});
+    trie.set("buy", {});
+    trie.set("sell", {});
+    trie.set("stock", {});
+    trie.set("stop", {});
+
+    std::cout << "b " << trie.countPrefix("b") << std::endl;
+    std::cout << "s " << trie.countPrefix("s") << std::endl;
+    std::cout << "se " << trie.countPrefix("se") << std::endl;
+    std::cout << "sell " << trie.countPrefix("sell") << std::endl;
+    std::cout << "d " << trie.countPrefix("d") << std::endl;
 
     return 0;
 }
