@@ -25,15 +25,17 @@ std::string read_file(
     return buffer;
 }
 
-struct TrieNode {
-    unsigned long pos;
-    unsigned long length;
+template<typename T>
+class TrieNode {
+    T data;
+    bool empty;
     TrieNode* children[26];
 
-    TrieNode() : pos(0), length(0), children() {}
+public:
 
-    TrieNode(unsigned long pos, unsigned long length)
-        : pos(pos), length(length), children() {}
+    TrieNode() : data(), empty(true), children() {}
+
+    TrieNode(T& data) : data(data), empty(false), children() {}
     
     ~TrieNode() {
         for (int i = 0; i < 26; i++) {
@@ -41,6 +43,18 @@ struct TrieNode {
         }
     }
 
+    bool isEmpty() {
+        return empty;
+    }
+
+    const T& getData() {
+        return data;
+    }
+
+    void setData(const T& value) {
+        data = value;
+        empty = false;
+    }
 
     TrieNode* getChild(char ch) {
         int i = ch - 'a';
@@ -52,22 +66,30 @@ struct TrieNode {
     }
 };
 
+template<typename T>
 class Trie {
-    TrieNode* root;
+    TrieNode<T>* root;
 
 public:
 
     Trie() {
-        root = new TrieNode();
+        root = new TrieNode<T>();
     }
 
     ~Trie() {
         delete root;
     }
 
-    // get(const std::string& key) {
-    // }
-}
+    const T& get(const std::string& key) {
+        TrieNode<T>* node = root;
+
+        for (char ch : key) {
+            node = node->getChild(ch);
+        }
+
+        return node->getData();
+    }
+};
 
 void parse_trie(const char* fileName) {
     std::string str = read_file(fileName);
@@ -94,6 +116,12 @@ void parse_trie(const char* fileName) {
     }
 }
 
+
+struct DictEntry {
+    unsigned long pos;
+    unsigned long length;
+};
+
 int main() {
     // char fileName[100];
     // std::cout << "file name: ";
@@ -101,6 +129,12 @@ int main() {
     std::string fileName = "dicionario1.dic";
 
     parse_trie(fileName.c_str());
+
+    Trie<DictEntry> trie;
+
+    auto data = trie.get("word");
+    data.pos = 123;
+    data.length = 49;
 
     return 0;
 }
