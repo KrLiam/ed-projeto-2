@@ -70,6 +70,14 @@ template<typename T>
 class Trie {
     TrieNode<T>* root;
 
+    TrieNode<T>* getNode(const std::string& key) {
+        TrieNode<T>* node = root;
+        for (char ch : key) {
+            node = node->getChild(ch);
+        }
+        return node;
+    }
+
 public:
 
     Trie() {
@@ -81,13 +89,7 @@ public:
     }
 
     const T& get(const std::string& key) {
-        TrieNode<T>* node = root;
-
-        for (char ch : key) {
-            node = node->getChild(ch);
-        }
-
-        return node->getData();
+        return getNode(key)->getData();
     }
 };
 
