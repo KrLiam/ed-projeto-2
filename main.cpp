@@ -90,7 +90,7 @@ struct DictEntry {
     unsigned long length;
 };
 
-Trie<DictEntry>* parse_trie(const char* fileName) {
+Trie<DictEntry>* parse_trie(const std::string& fileName) {
     Trie<DictEntry>* trie = new Trie<DictEntry>();
 
     std::ifstream stream(fileName);
@@ -115,7 +115,7 @@ int main() {
     std::string fileName;
     std::cin >> fileName;
 
-    Trie<DictEntry>* trie = parse_trie(fileName.c_str());
+    Trie<DictEntry>* trie = parse_trie(fileName);
 
     while (1) {
         std::string word;
