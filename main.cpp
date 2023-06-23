@@ -25,6 +25,7 @@ std::string read_file(
     return buffer;
 }
 
+
 template<typename T>
 class TrieNode {
     T data;
@@ -109,61 +110,45 @@ public:
     }
 };
 
-void parse_trie(const char* fileName) {
-    std::string str = read_file(fileName);
-
-    std::cout << str.length() << std::endl;
-
-    unsigned long pos = 0;
-
-    while (pos < str.length()) {
-        unsigned long end_pos = str.find('\n', pos);
-        if (end_pos == std::string::npos) {
-            end_pos = str.length();
-        }
-
-        pos++; // pula [
-
-        unsigned long key_end_pos = str.find(']', pos);
-
-        std::string key = str.substr(pos, key_end_pos - pos);
-        unsigned long start_pos = key_end_pos + 1;
-        unsigned long lenght = end_pos - key_end_pos - 1;
-
-        pos = end_pos + 1; // pula caractere de nova linha
-    }
-}
-
-
 struct DictEntry {
     unsigned long pos;
     unsigned long length;
 };
 
+Trie<DictEntry>* parse_trie(const char* fileName) {
+    Trie<DictEntry>* trie = new Trie<DictEntry>();
+
+    std::ifstream stream(fileName);
+
+    while (!stream.eof()) {
+        unsigned long pos = stream.tellg();
+
+        std::string line;
+        std::getline(stream, line);
+        if (!line.length()) continue;
+
+        int key_end = line.find(']');
+        std::string key = line.substr(1, key_end - 1);
+        trie->set(key, {pos, line.length()});
+    }
+
+    return trie;
+}
+
+
 int main() {
     // char fileName[100];
     // std::cout << "file name: ";
     // std::cin >> fileName;  // entrada
-    std::string fileName = "dicionario1.dic";
+    std::string fileName = "dicionario2.dic";
 
-    parse_trie(fileName.c_str());
+    Trie<DictEntry>* trie = parse_trie(fileName.c_str());
 
-    Trie<DictEntry> trie;
-
-    trie.set("bear", {});
-    trie.set("bell", {});
-    trie.set("bid", {});
-    trie.set("bull", {});
-    trie.set("buy", {});
-    trie.set("sell", {});
-    trie.set("stock", {});
-    trie.set("stop", {});
-
-    std::cout << "b " << trie.countPrefix("b") << std::endl;
-    std::cout << "s " << trie.countPrefix("s") << std::endl;
-    std::cout << "se " << trie.countPrefix("se") << std::endl;
-    std::cout << "sell " << trie.countPrefix("sell") << std::endl;
-    std::cout << "d " << trie.countPrefix("d") << std::endl;
+    std::cout << "b " << trie->countPrefix("b") << std::endl;
+    std::cout << "s " << trie->countPrefix("s") << std::endl;
+    std::cout << "se " << trie->countPrefix("se") << std::endl;
+    std::cout << "sell " << trie->countPrefix("sell") << std::endl;
+    std::cout << "d " << trie->countPrefix("d") << std::endl;
 
     return 0;
 }
