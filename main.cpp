@@ -1,29 +1,5 @@
 #include <fstream>
-#include <string>
 #include <iostream>
-#include <memory>
-#include <cctype>
-#include <cstring>
-
-
-std::string read_file(
-    const char* fileName, unsigned long offset = 0, unsigned long length = 0
-) {
-    std::ifstream t(fileName);
-
-    if (!length) {
-        t.seekg(offset, std::ios::end);
-        length = t.tellg();
-        length -= offset;
-    }
-
-    std::string buffer(length, ' ');
-
-    t.seekg(offset);
-    t.read(&buffer[0], length);
-
-    return buffer;
-}
 
 
 template<typename T>
@@ -35,8 +11,6 @@ class TrieNode {
 public:
 
     TrieNode() : data(), empty(true), children() {}
-
-    TrieNode(T& data) : data(data), empty(false), children() {}
 
     ~TrieNode() {
         for (int i = 0; i < 26; i++) {
@@ -109,6 +83,7 @@ public:
         return getNode(key)->count();
     }
 };
+
 
 struct DictEntry {
     unsigned long pos;
