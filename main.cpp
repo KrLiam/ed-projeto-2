@@ -8,7 +8,7 @@
 
 std::string read_file(
     const char* fileName, unsigned long offset = 0, unsigned long length = 0
-) {    
+) {
     std::ifstream t(fileName);
 
     if (!length) {
@@ -37,7 +37,7 @@ public:
     TrieNode() : data(), empty(true), children() {}
 
     TrieNode(T& data) : data(data), empty(false), children() {}
-    
+
     ~TrieNode() {
         for (int i = 0; i < 26; i++) {
             if (children[i]) delete children[i];
@@ -137,18 +137,29 @@ Trie<DictEntry>* parse_trie(const char* fileName) {
 
 
 int main() {
-    // char fileName[100];
-    // std::cout << "file name: ";
-    // std::cin >> fileName;  // entrada
-    std::string fileName = "dicionario2.dic";
+    std::string fileName;
+    std::cin >> fileName;
 
     Trie<DictEntry>* trie = parse_trie(fileName.c_str());
 
-    std::cout << "b " << trie->countPrefix("b") << std::endl;
-    std::cout << "s " << trie->countPrefix("s") << std::endl;
-    std::cout << "se " << trie->countPrefix("se") << std::endl;
-    std::cout << "sell " << trie->countPrefix("sell") << std::endl;
-    std::cout << "d " << trie->countPrefix("d") << std::endl;
+    while (1) {
+        std::string word;
+        std::cin >> word;
+
+        if (word.length() == 1 && word[0] == '0') break;
+
+        int count = trie->countPrefix(word);
+        if (count > 0) {
+            std::cout << word << " is prefix of " << count << " words" << std::endl;
+        } else {
+            std::cout << word << " is not prefix" << std::endl;
+        }
+
+        DictEntry entry = trie->get(word);
+        if (entry.length) {
+            std::cout << word << " is at (" << entry.pos << "," << entry.length << ")" << std::endl;
+        }
+    }
 
     return 0;
 }
